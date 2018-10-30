@@ -60,6 +60,7 @@ class MiniProject2Plugin(PluginBase):
     def recursive_fill_composition(self, core, logger, json_maker, node, model):
         children = core.load_children(node)
         for child in children:
+            logger.info('CURRENT NODE: ' + core.get_attribute(child,'name') + ' GUID: ' + core.get_guid(child))
             if core.is_connection(child):
                 # logger.info('Connection: ' + core.get_attribute(child, 'name') + ' RelID: ' + core.get_relid(child))
                 model['children'].update(self.build_connection_json_dict(core, logger, json_maker, child, model))
