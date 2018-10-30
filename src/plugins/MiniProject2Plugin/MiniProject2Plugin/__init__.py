@@ -59,7 +59,6 @@ class MiniProject2Plugin(PluginBase):
     # loops through children of a node and calls a corresponding dictionary building function
     def recursive_fill_composition(self, core, logger, json_maker, node, model):
         children = core.load_children(node)
-        logger.info(children)
         for child in children:
             if core.is_connection(child):
                 # logger.info('Connection: ' + core.get_attribute(child, 'name') + ' RelID: ' + core.get_relid(child))
@@ -71,11 +70,15 @@ class MiniProject2Plugin(PluginBase):
     # builds a dictionary for nodes
     def build_node_json_dict(self, core, logger, json_maker, node, model):
         name = core.get_attribute(node, 'name')
-        isMeta = core.is_meta_node(node)
-        metaType = core.get_attribute(core.get_meta_type(node), 'name')
+        is_meta = core.is_meta_node(node)
+        meta_type = core.get_attribute(core.get_meta_type(node), 'name')
+        documentation = core.get_attribute(node, 'documentation')
         relid = core.get_relid(node)
 
-        node_json = {relid: {'name': name, 'isMeta': isMeta, 'metaType': metaType, 'children': {}}}
+        if documentation is not None:
+            node_json = {relid: {'name': name, 'is_meta': is_meta, 'meta_type': meta_type, 'description': documentation,'children': {}}}
+        else:
+            node_json = {relid: {'name': name, 'is_meta': is_meta, 'meta_type': meta_type, 'children': {}}}
 
         self.recursive_fill_composition(core, logger, json_maker, node, node_json[relid])
 
@@ -84,23 +87,23 @@ class MiniProject2Plugin(PluginBase):
     # builds a dictionary for connection
     def build_connection_json_dict(self, core, logger, json_maker, connection, model):
         name = core.get_attribute(connection, 'name')
-        isMeta = core.is_meta_node(connection)
-        metaType = core.get_attribute(core.get_meta_type(connection), 'name')
+        is_meta = core.is_meta_node(connection)
+        meta_type = core.get_attribute(core.get_meta_type(connection), 'name')
         relid = core.get_relid(connection)
         src = core.load_pointer(connection, 'src')
         dst = core.load_pointer(connection, 'dst')
         if src != None:
-            srcNode = core.get_attribute(core.get_parent(src), 'name')
+            src_node = core.get_attribute(core.get_parent(src), 'name')
         else:
-            srcNode = 'null'
+            src_node = 'null'
         if dst != None:
-            dstNode = core.get_attribute(core.get_parent(dst), 'name')
+            src_node = core.get_attribute(core.get_parent(dst), 'name')
         else:
-            dstNode = 'null'
+            src_node = 'null'
 
         connection_json = {
-            relid: {'name': name, 'isMeta': isMeta, 'metaType': metaType, 'guard': 'null', 'src': srcNode,
-                    'dst': dstNode}}
+            relid: {'name': name, 'is_meta': is_meta, 'meta_type': meta_type, 'src': src_node,
+                    'dst': src_node}}
 
         return connection_json
 
