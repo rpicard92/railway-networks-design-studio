@@ -1,0 +1,13 @@
+{
+  "components": {
+    "plugins": {
+      "MiniProject2Plugin": {
+        "src": "src/plugins/MiniProject2Plugin",
+        "test": "test/plugins/MiniProject2Plugin"
+      }
+    }
+  },
+  "dependencies": {
+    "plugins": {}
+  }
+}
