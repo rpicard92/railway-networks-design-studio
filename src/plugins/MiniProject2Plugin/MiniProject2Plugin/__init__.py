@@ -30,14 +30,14 @@ class MiniProject2Plugin(PluginBase):
         active_node = self.active_node
 
         # task1
-        modelTask1 = {'name': core.get_attribute(active_node, 'name'), 'children': {}}
-        self.recursiveFillComposition(core, logger, json_maker, active_node, modelTask1)
-        task1 = json_maker.dumps(modelTask1, indent=4, separators=(',', ': '))
+        model_task1 = {'name': core.get_attribute(active_node, 'name'), 'children': {}}
+        self.recursive_fill_composition(core, logger, json_maker, active_node, model_task1)
+        task1 = json_maker.dumps(model_task1, indent=4, separators=(',', ': '))
         logger.info(task1)
 
         # task2
-        modelTask2 = self.build_meta_node_json(core, active_node)
-        task2 = json_maker.dumps(modelTask2, indent=4, separators=(',', ': '))
+        model_task2 = self.build_meta_node_json(core, active_node)
+        task2 = json_maker.dumps(model_task2, indent=4, separators=(',', ': '))
         logger.info(task2)
 
         # save the task outputs
@@ -45,6 +45,8 @@ class MiniProject2Plugin(PluginBase):
 
         # plugin end time
         end = time.time()
+
+        # print plugin execution time
         logger.info('ELAPSED TIME: ' + str(end - start))
 
     def save_code(self, task1, task2):
@@ -53,12 +55,9 @@ class MiniProject2Plugin(PluginBase):
             'meta.json': task2
         })
         logger.info('The artifact is stored under hash: {0}'.format(artifact_hash))
-        # self.add_file('tree.json',task1)
-        # self.add_file('meta.json',task2)
 
-        # loops through children of a node and calls a corresponding dictionary building function
-
-    def recursiveFillComposition(self, core, logger, json_maker, node, model):
+    # loops through children of a node and calls a corresponding dictionary building function
+    def recursive_fill_composition(self, core, logger, json_maker, node, model):
         children = core.load_children(node)
         logger.info(children)
         for child in children:
@@ -69,8 +68,7 @@ class MiniProject2Plugin(PluginBase):
                 # logger.info('Node: ' + core.get_attribute(child, 'name') + ' RelID: ' + core.get_relid(child))
                 model['children'].update(self.build_node_json_dict(core, logger, json_maker, child, model))
 
-        # builds a dictionary for nodes
-
+    # builds a dictionary for nodes
     def build_node_json_dict(self, core, logger, json_maker, node, model):
         name = core.get_attribute(node, 'name')
         isMeta = core.is_meta_node(node)
@@ -79,12 +77,11 @@ class MiniProject2Plugin(PluginBase):
 
         node_json = {relid: {'name': name, 'isMeta': isMeta, 'metaType': metaType, 'children': {}}}
 
-        self.recursiveFillComposition(core, logger, json_maker, node, node_json[relid])
+        self.recursive_fill_composition(core, logger, json_maker, node, node_json[relid])
 
         return node_json
 
-        # builds a dictionary for connection
-
+    # builds a dictionary for connection
     def build_connection_json_dict(self, core, logger, json_maker, connection, model):
         name = core.get_attribute(connection, 'name')
         isMeta = core.is_meta_node(connection)
@@ -107,8 +104,9 @@ class MiniProject2Plugin(PluginBase):
 
         return connection_json
 
+    # builds array of meta node dictionaries
     def build_meta_node_json(self, core, node):
-        modelTask2 = []
+        model_task2 = []
         metaNodesDict = core.get_all_meta_nodes(node)
         for path in metaNodesDict:
             meta_node = metaNodesDict[path]
@@ -126,5 +124,5 @@ class MiniProject2Plugin(PluginBase):
                 meta_node_base_name = 'null'
             meat_node_json = {'name': meta_node_name, 'path': meta_node_path, 'nbrOfChildren': nbr_of_children,
                               'base': meta_node_base_name}
-            modelTask2.append(meat_node_json)
-        return modelTask2
+            model_task2.append(meat_node_json)
+        return model_task2
