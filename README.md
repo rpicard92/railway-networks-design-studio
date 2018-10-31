@@ -25,7 +25,7 @@
 5. Run: "npm install"
 6. Run: "npm start"
 7. Navigate to "http://localhost:8888" from a web browser
-8. Create and import project: "guest+RailwayNetworks_79008e.webgmex" located in the top directory of this project
+8. Create and import project: "rpicard92+RailwayNetwork_2cbd36.webgmex" located in the top directory of this project
 9. Click the root node in the composition tab (background). 
 10. Under the property editor on the lower right, click meta, and choose the plugin named "MiniProject2Plugin" from the "validPlugins" field.
 11. In the upper right click play (execute), and click "MiniProject2Plugin", then "Run..." on the popup dialog.
